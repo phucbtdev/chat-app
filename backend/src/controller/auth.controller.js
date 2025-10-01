@@ -62,7 +62,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body
     try {
-        const user = User.findOne({ email })
+        const user = await User.findOne({ email })
         if (!user) return res.status(400).json({ message: "Invalid credentials" })
 
         const isMatch = await bcrypt.compare(password, user.password)
@@ -81,10 +81,9 @@ export const login = async (req, res) => {
 
 }
 
-export const logout = async (_, res) => {
+export const logout = (_, res) => {
     res.cookie("jwt", "", {
-        httpOnly: true,
-        expires: new Date(0),
+        maxAge: 0,
     })
     res.status(200).json({ message: "Logged out successfully" })
 }
